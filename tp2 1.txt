@@ -1,0 +1,104 @@
+UNIVERSIDADE FEDERAL DE MINAS GERAIS
+Instituto de Ciências Exatas
+Departamento de Ciência da Computação
+
+DCC207 -- Algoritmos 2
+Prof. Renato Vimieiro
+
+Trabalho Prático 2 -- Soluções para problemas difíceis
+
+Objetivos
+---------
+
+Nesse trabalho serão abordados os aspectos práticos dos algoritmos para solucionar
+problemas difíceis. Avaliaremos as implementações dos algoritmos para computação
+de rotas no problema do caixeiro viajante. Especificamente, avaliaremos uma solução
+exata, baseada em branch-and-bound, e as duas soluções aproximadas vistas em sala de
+aula para o TSP euclidiano, twice-around-the-tree e algoritmo de Christofides.
+
+
+O objetivo principal é que os alunos presenciem as dificuldades inerentes
+da implementação dos algoritmos vistos em sala de aula. Os alunos deverão
+tomar decisões e/ou investigar quanto a melhor representação dos dados, e
+estruturas mais adequadas para a implementação dos algoritmos.
+
+
+Tarefas
+-------
+
+Os alunos deverão implementar um algoritmo branch-and-bound, o algoritmo twice-around-the-tree,
+e o algoritmo de Christofides para solucionar o problema do caixeiro viajante métrico.
+
+As implementações poderão ser feitas em Python3 (preferencial) ou C++11. Em ambos os casos,
+só poderão ser usadas as bibliotecas constantes nas distribuições padrão das linguagens.
+No caso de Python3, pode-se assumir como distribuição padrão a Anaconda 22.9 e/ou
+Python +3.9 com NumPy, SciPy e Pandas. No caso de C++11, deve-se assumir o padrão da
+linguagem. Exclusivamente para C++, deverá ser enviado, em conjunto com o código-fonte, um
+arquivo makefile com as instruções de compilação do programa.
+
+Para a manipulação de grafos e algoritmos relacionados, mas não os mencionados aqui,
+você pode usar as bibliotecas Networkx (Python), iGraph (C++/Python).
+O uso de bibliotecas adicionais deve ser discutido com o professor.
+
+Além de implementar os algoritmos, os alunos deverão criar um gerador de instâncias para o
+TSP métrico. Para simplificar a leitura, os pontos deverão ter apenas coordenadas inteiras. 
+Deverão ser consideradas duas funções de custo: a distância Euclidiana padrão; e a distância 
+Manhattan. Isto é, deverão ser geradas duas funções de custo para cada instância. Deverão 
+ser geradas instâncias de tamanho 2^i para 4 ≤ i ≤ 10.
+
+Em seguida, os alunos deverão avaliar o desempenho dos algoritmos segundo três aspectos:
+tempo, espaço, e qualidade da solução. Cada algoritmo deverá ser executado com cada
+instância gerada acima, considerando ambas as funções de custo, e as variáveis de desempenho
+devem ser coletadas para a tripla (algoritmo, instância, métrica). O tempo de processamento
+deve ser limitado a 30min. Após esse prazo a execução do algoritmo deve ser abortada e os
+dados referentes à tripla colocados como NA (não-disponível).
+
+Finalmente, deverá ser escrito um relatório em formato de artigo científico em que:
+
+1. Se introduz o problema e o trabalho realizado.
+2. Descreve as implementações utilizadas. Deve-se apresentar com detalhes a escolha da
+estimativa de custo; estruturas de dados usadas e o porquê; além de qualquer outro detalhe
+de implementação e dos algoritmos em si.
+3. Apresentar os experimentos e discutir os resultados. Você deve avaliar os limites de
+cada algoritmo/implementação, tentando buscar uma relação entre tipo de métrica/tamanho da
+instância e desempenho. Deve também comparar os algoritmos entre si. Tente responder quando
+cada implementação se sai melhor ou deveria ser usada.
+4. Apresente as conclusões do seu trabalho. Mostre o quê pôde ser percebido com seus 
+experimentos.
+
+O artigo deverá ser escrito em Latex, usando a classe article.
+
+Caso não tenha familiaridade com escrita de artigos, sugiro a leitura do material preparado
+pela Profa. Mirella disponível em https://homepages.dcc.ufmg.br/~mirella/doku.php?id=escrita.
+
+
+O que entregar?
+---------------
+
+Devem ser entregues os códigos-fonte, resultados dos experimentos, e pdf com o relatório.
+No caso de implementações em C++, devem ser entregues também os arquivos makefile para
+compilação.
+
+Política de Plágio
+------------------
+
+Os alunos podem, e devem, discutir soluções sempre que necessário. Dito isso,
+há uma diferença bem grande entre implementação de soluções similares e cópia
+integral de ideias. Trabalhos copiados na íntegra ou em partes de outros alunos
+e/ou da internet serão prontamente anulados. Caso hajam dois trabalhos copiados
+por alunos diferentes, ambos serão anulados.
+
+Datas
+-----
+
+Entrega Teams: 04/12/2022
+
+Links de interesse
+------------------
+
+https://en.wikipedia.org/wiki/Blossom_algorithm
+https://www.eecs.tufts.edu/~gdicks02/Blossom/Blossom_Algorithm.html
+https://networkx.github.io/documentation/latest/index.html
+https://igraph.org
+https://homepages.dcc.ufmg.br/~mirella/doku.php?id=escrita
+
