@@ -3,3 +3,5 @@ class Point:
         self.x = x_coord
         self.y = y_coord
     
+    def __str__(self):
+        return "(" + str(self.x) + ", " + str(self.y) + ")"
