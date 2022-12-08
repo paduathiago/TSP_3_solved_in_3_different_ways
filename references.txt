@@ -1,0 +1,2 @@
+https://stackoverflow.com/questions/40128692/networkx-how-to-add-weights-to-an-existing-g-edges
+https://mineracaodedados.wordpress.com/tag/distancia-manhattan/

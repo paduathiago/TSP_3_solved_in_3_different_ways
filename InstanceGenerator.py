@@ -5,6 +5,7 @@ from random import randint
 from math import sqrt
 
 class InstanceGenerator:
+    
     def euclideanDistance(self, point1, point2):
         return sqrt((point2.x - point1.x) ** 2 + (point2.y - point1.y) ** 2)
 
