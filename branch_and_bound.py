@@ -30,6 +30,14 @@ class BranchAndBoundTSP:
         print('=========================')
         return nodeEdges
     
+    def findMinUsefulWeight(self, nodeEdges, solution):
+        minWeight = inf
+        for i in range(len(nodeEdges)):
+            for j in range(len(nodeEdges)):
+                if nodeEdges[i][j]['weight'] < minWeight and nodeEdges[i] not in solution and nodeEdges[i] not in solution:
+                    minWeight = nodeEdges[i][j]['weight']
+        return minWeight
+
     def initRoot(self, graph):
         lb = 0
         for node in graph:
@@ -51,8 +59,8 @@ class BranchAndBoundTSP:
                 lb += nodeEdges[0][2]['weight'] + nodeEdges[1][2]['weight']
             else:
                 if i == 0 or i == len(nodes):
-                    nodeEdges = self.findMinWeights(nodeEdges)
-                    lb += nodeEdges[0][2]['weight']
+                    minWeight = self.findMinUsefulWeight(nodeEdges, solution)
+                    lb += minWeight
                     lb += graph[nodes[i]][nodes[i + 1]]['weight']
                 else:
                     lb += graph[nodes[i]][nodes[i - 1]]['weight']
