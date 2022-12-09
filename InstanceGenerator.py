@@ -29,7 +29,7 @@ class InstanceGenerator:
         for p1, p2, eWeight in TSPGraph.edges.data('weight'):
             print(p1, p2, eWeight)
     
-    def generateGraphEucliedean(self, pointsList):
+    def generateGraphManhattan(self, pointsList):
         TSPGraph = nx.complete_graph(pointsList)
         for n in TSPGraph:
             for nbr in TSPGraph[n]:
