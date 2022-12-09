@@ -1,6 +1,7 @@
 import networkx as nx
 import heapq
 from math import ceil
+from copy import deepcopy
 from numpy import inf
 
 # from InstanceGenerator import InstanceGenerator
@@ -50,16 +51,18 @@ class BranchAndBoundTSP:
         return root
     
     def bound(self, solution, newNode, graph):
+        auxSolution = deepcopy(solution)
+        auxSolution.append(newNode)
         lb = 0
         nodes = list(graph.nodes)
         for i in range(nodes):
             nodeEdges = list(graph.edges(nodes[i], data=True))
-            if not nodes[i] in solution:
+            if not nodes[i] in auxSolution:
                 nodeEdges = self.findMinWeights(nodeEdges)
                 lb += nodeEdges[0][2]['weight'] + nodeEdges[1][2]['weight']
             else:
                 if i == 0 or i == len(nodes):
-                    minWeight = self.findMinUsefulWeight(nodeEdges, solution)
+                    minWeight = self.findMinUsefulWeight(nodeEdges, auxSolution)
                     lb += minWeight
                     lb += graph[nodes[i]][nodes[i + 1]]['weight']
                 else:
@@ -67,6 +70,7 @@ class BranchAndBoundTSP:
                     lb += graph[nodes[i]][nodes[i + 1]]['weight']
         
         lb = ceil(lb / 2)
+        return lb
 
     
     def BnB(self, graph, root):
@@ -82,15 +86,19 @@ class BranchAndBoundTSP:
                     solution = node.sol
             elif node.lb < best:
                 if node.level < num_nodes - 1:
-                for vertex in graph:
-                    newBound = self.bound(node.solution, vertex, graph)
-                    if not vertex in node.solution and node != vertex and newBound < best:
-                        heapq.heappush(queue, vertex)
+                    for vertex in graph:
+                        newBound = self.bound(node.solution, vertex, graph)
+                        if not vertex in node.solution and node != vertex and newBound < best:
+                            nextNode = Node(newBound, node.level + 1, node.cost + graph[node.sol[-1]][vertex], node.solution.append(vertex))
+                            heapq.heappush(queue, nextNode)
+                elif graph[node.sol[-1]][0] != None and self.bound(node.sol, node.sol[0], graph) and len(node.solution) == len(graph.nodes):
+                    nextNode = Node(newBound, node.level + 1, node.cost + graph[node.sol[-1]][node.sol[0]], node.solution.append(node.sol[0]))
+                    heapq.heappush(queue, nextNode)
     
 
     def runBranchAndBound(self, graph):
         root = self.initRoot(graph)
-        #self.BnB(graph, root)
+        self.BnB(graph, root)
 
     
 G = nx.Graph()
