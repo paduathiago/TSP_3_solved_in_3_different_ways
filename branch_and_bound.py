@@ -43,16 +43,24 @@ class BranchAndBoundTSP:
     
     def bound(self, solution, newNode, graph):
         lb = 0
-        for n in graph:
-            nodeEdges = list(graph.edges(n, data=True))
-            nodeEdges.sort(key=lambda t: t[2]['weight'])
-            if n != newNode and n != solution[-1]:
+        nodes = list(graph.nodes)
+        for i in range(nodes):
+            nodeEdges = list(graph.edges(nodes[i], data=True))
+            if not nodes[i] in solution:
+                nodeEdges = self.findMinWeights(nodeEdges)
                 lb += nodeEdges[0][2]['weight'] + nodeEdges[1][2]['weight']
             else:
-                lb += nodeEdges[0][2]['weight'] + nodeEdges[1][2]['weight']
+                if i == 0 or i == len(nodes):
+                    nodeEdges = self.findMinWeights(nodeEdges)
+                    lb += nodeEdges[0][2]['weight']
+                    lb += graph[nodes[i]][nodes[i + 1]]['weight']
+                else:
+                    lb += graph[nodes[i]][nodes[i - 1]]['weight']
+                    lb += graph[nodes[i]][nodes[i + 1]]['weight']
+        
         lb = ceil(lb / 2)
 
-    """
+    
     def BnB(self, graph, root):
         num_nodes = len(graph.nodes())
         queue = []
@@ -70,7 +78,7 @@ class BranchAndBoundTSP:
                     newBound = self.bound(node.solution, vertex, graph)
                     if not vertex in node.solution and node != vertex and newBound < best:
                         heapq.heappush(queue, vertex)
-    """
+    
 
     def runBranchAndBound(self, graph):
         root = self.initRoot(graph)
