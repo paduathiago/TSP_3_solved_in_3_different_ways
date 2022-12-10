@@ -32,16 +32,15 @@ class BranchAndBoundTSP:
             aux = nodeEdges[pos]
             nodeEdges[pos] = minValue
             nodeEdges[newPosition] = aux
-        print(nodeEdges)
-        print('=========================')
+        #print(nodeEdges)
+        #print('=========================')
         return nodeEdges
     
-    def findMinUsefulWeight(self, graph, solution):
+    def findMinUsefulWeight(self, node, graph, solution):
         minWeight = inf
-        for n in graph:
-            for nbr in graph[n]:
-                if graph[n][nbr]['weight'] < minWeight and graph[n] not in solution and graph[n] not in solution:
-                    minWeight = graph[n][nbr]['weight']
+        for nbr in graph[node]:
+            if graph[node][nbr]['weight'] < minWeight and graph[node] not in solution and graph[node] not in solution:
+                minWeight = graph[node][nbr]['weight']
 
         """
         for i in range(len(nodeEdges)):
@@ -68,27 +67,28 @@ class BranchAndBoundTSP:
         auxSolution.append(newNode)
         lb = 0
         nodes = list(graph.nodes)
+        
+        for i in range(len(solution) - 1):
+            lb += 2 * graph[solution[i]][solution[i + 1]]['weight']
+        
+        lb += 2 * self.findMinUsefulWeight(solution[0], graph, solution)
+        lb += 2 * self.findMinUsefulWeight(solution[-1], graph, solution)
+        
         for i in range(len(nodes)):
             nodeEdges = list(graph.edges(nodes[i], data=True))
             if not nodes[i] in auxSolution:
                 nodeEdges = self.findMinWeights(nodeEdges)
                 lb += nodeEdges[0][2]['weight'] + nodeEdges[1][2]['weight']
-            else:
-                if i == 0 or i == len(nodes):
-                    minWeight = self.findMinUsefulWeight(graph, auxSolution)
-                    lb += minWeight
-                    lb += graph[nodes[i]][nodes[i + 1]]['weight']
-                else:
-                    lb += graph[nodes[i]][nodes[i - 1]]['weight']
-                    lb += graph[nodes[i]][nodes[i + 1]]['weight']
         
         lb = ceil(lb / 2)
+        print(lb)
         return lb
 
     
     def BnB(self, graph, root):
         num_nodes = len(graph.nodes())
         queue = []
+        solution = []
         heapq.heappush(queue, root)
         best = inf
         while queue:
@@ -102,16 +102,22 @@ class BranchAndBoundTSP:
                     for vertex in graph:
                         newBound = self.bound(node.sol, vertex, graph)
                         if not vertex in node.sol and node != vertex and newBound < best:
-                            nextNode = Node(newBound, node.level + 1, node.cost + graph[node.sol[-1]][vertex]['weight'], node.sol.append(vertex))
+                            newSolution = deepcopy(node.sol)
+                            newSolution.append(vertex)
+                            nextNode = Node(newBound, node.level + 1, node.cost + graph[node.sol[-1]][vertex]['weight'], newSolution)
                             heapq.heappush(queue, nextNode)
-                elif graph[node.sol[-1]][0] != None and self.bound(node.sol, node.sol[0], graph) and len(node.sol) == len(graph.nodes):
-                    nextNode = Node(newBound, node.level + 1, node.cost + graph[node.sol[-1]][node.sol[0]]['weight'], node.sol.append(node.sol[0]))
+                elif len(node.sol) != 1 and self.bound(node.sol, node.sol[0], graph) and len(node.sol) == len(graph.nodes):
+                    newSolution = deepcopy(node.sol)
+                    newSolution.append(node.sol[0])
+                    nextNode = Node(newBound, node.level + 1, node.cost + graph[node.sol[-1]][node.sol[0]]['weight'], newSolution)
                     heapq.heappush(queue, nextNode)
+        
+        return solution
     
 
     def runBranchAndBound(self, graph):
         root = self.initRoot(graph)
-        self.BnB(graph, root)
+        return self.BnB(graph, root)
 
     
 G = nx.Graph()
@@ -128,7 +134,10 @@ G.add_edge('d', 'e', weight=3)
 
 
 BnB = BranchAndBoundTSP()
-BnB.runBranchAndBound(G)
+print(BnB.runBranchAndBound(G))
+
+"""
 for node in G:
     nodeEdges = list(G.edges(node, data=True))
     BnB.findMinWeights(nodeEdges)
+"""
