@@ -21,7 +21,7 @@ class Node:
 class BranchAndBoundTSP:
 
     def findMinWeights(self, nodeEdges):
-        print(nodeEdges)
+        #print(nodeEdges)
         for pos in range(2):
             minValue = nodeEdges[pos]
             newPosition = pos
@@ -42,12 +42,6 @@ class BranchAndBoundTSP:
             if graph[node][nbr]['weight'] < minWeight and graph[node] not in solution and graph[node] not in solution:
                 minWeight = graph[node][nbr]['weight']
 
-        """
-        for i in range(len(nodeEdges)):
-            for j in range(len(nodeEdges)):
-                if nodeEdges[i][j]['weight'] < minWeight and nodeEdges[i] not in solution and nodeEdges[i] not in solution:
-                    minWeight = nodeEdges[i][j]['weight']
-        """
         return minWeight
         
 
@@ -58,7 +52,7 @@ class BranchAndBoundTSP:
             nodeEdges = self.findMinWeights(nodeEdges)
             lb += nodeEdges[0][2]['weight'] + nodeEdges[1][2]['weight']
         lb = ceil(lb / 2)
-        print(lb)
+        #print(lb)
         root = Node(lb, 0, 0, [list(graph.nodes)[0]])
         return root
     
@@ -81,9 +75,16 @@ class BranchAndBoundTSP:
                 lb += nodeEdges[0][2]['weight'] + nodeEdges[1][2]['weight']
         
         lb = ceil(lb / 2)
-        print(lb)
+        #print(lb)
         return lb
 
+    def inhibitDoubleSolution(self, graph, solution):
+        nodes = list(graph.nodes)
+        for vertex in solution:
+            if vertex == nodes[1]:
+                return True
+            if vertex == nodes[2]:
+                return False
     
     def BnB(self, graph, root):
         num_nodes = len(graph.nodes())
@@ -102,10 +103,11 @@ class BranchAndBoundTSP:
                     for vertex in graph:
                         newBound = self.bound(node.sol, vertex, graph)
                         if not vertex in node.sol and node != vertex and newBound < best:
-                            newSolution = deepcopy(node.sol)
-                            newSolution.append(vertex)
-                            nextNode = Node(newBound, node.level + 1, node.cost + graph[node.sol[-1]][vertex]['weight'], newSolution)
-                            heapq.heappush(queue, nextNode)
+                            if self.inhibitDoubleSolution(graph, node.sol) or len(node.sol) < 2:
+                                newSolution = deepcopy(node.sol)
+                                newSolution.append(vertex)
+                                nextNode = Node(newBound, node.level + 1, node.cost + graph[node.sol[-1]][vertex]['weight'], newSolution)
+                                heapq.heappush(queue, nextNode)
                 elif len(node.sol) != 1 and self.bound(node.sol, node.sol[0], graph) and len(node.sol) == len(graph.nodes):
                     newSolution = deepcopy(node.sol)
                     newSolution.append(node.sol[0])
@@ -135,9 +137,3 @@ G.add_edge('d', 'e', weight=3)
 
 BnB = BranchAndBoundTSP()
 print(BnB.runBranchAndBound(G))
-
-"""
-for node in G:
-    nodeEdges = list(G.edges(node, data=True))
-    BnB.findMinWeights(nodeEdges)
-"""
